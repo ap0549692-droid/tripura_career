@@ -1,11 +1,11 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Packages.composer", "php82Extensions.gd", "php82Extensions.curl", "php82Extensions.mbstring", "php82Extensions.zip", "php82Extensions.pdo_mysql", "php82Extensions.bcmath"]
+nixPkgs = ["php82", "php82Packages.composer", "libpng", "libjpeg", "freetype", "zlib"]
 
 [phases.install]
-cmds = ["composer install --no-dev --no-interaction --no-scripts --ignore-platform-reqs"]
+cmds = ["composer install --no-dev --ignore-platform-req=ext-gd --optimize-autoloader --no-interaction"]
 
 [phases.build]
-cmds = []
+cmds = ["php artisan config:clear || true"]
 
 [start]
-cmd = "php artisan migrate --force || true && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
