@@ -14,6 +14,7 @@ class Job extends Model
     'last_date',
     'apply_link',
     'pdf_link',
-    'image'
+    'image',
+    'category'
 ];
 }

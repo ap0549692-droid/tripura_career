@@ -1,49 +1,36 @@
 @extends('layouts.app')
-
 @section('content')
-<div class="container mt-4">
-    <div class="card shadow-lg">
-        <div class="card-header bg-success text-white">
-            <h3>{{ $scholarship->title }}</h3>
-        </div>
-        <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-6"><p><b>🏢 Provider:</b> {{ $scholarship->provider }}</p></div>
-                <div class="col-md-6"><p><b>💰 Amount:</b> {{ is_numeric($scholarship->amount) ? '₹'.number_format($scholarship->amount) : $scholarship->amount }}</p></div>
-                <div class="col-md-6"><p><b>📂 Category:</b> {{ $scholarship->category }}</p></div>
-                <div class="col-md-6"><p><b>📅 Last Date:</b> {{ \Carbon\Carbon::parse($scholarship->last_date)->format('d-m-Y') }}</p></div>
-            </div>
-            
-            <hr>
-            <h5>✅ Eligibility:</h5>
-            <p>{{ $scholarship->eligibility }}</p>
-            
-            <h5>📝 Description:</h5>
-            <p>{{ $scholarship->description }}</p>
-            
-            @if($scholarship->document_path)
-                <hr>
-                <h5>📄 Documents / Guidelines:</h5>
-                @php $files = explode(',', $scholarship->document_path); @endphp
-                @foreach($files as $file)
-                    <a href="{{ asset('storage/'.$file) }}" target="_blank" class="btn btn-sm btn-info mb-2 me-2">View Doc</a>
-                @endforeach
-            @endif
-            
-            <hr>
-            <div class="d-flex gap-2 flex-wrap">
-                {{-- 1. Official Site pe Apply --}}
-                @if($scholarship->apply_link)
-                    <a href="{{ $scholarship->apply_link }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">Apply on Official Site →</a>
-                @endif
+<div class="max-w-3xl mx-auto px-4 py-8">
+  <a href="{{ route('scholarships.index') }}" class="text-sm font-bold mb-4 inline-block">← Back</a>
 
-                {{-- 2. Tere site pe Apply --}}
-                <a href="{{ route('application.create', $scholarship->id) }}" class="btn btn-danger btn-lg">Apply on TripuraCareer</a>
-
-                {{-- 3. Back public list pe --}}
-                <a href="{{ route('scholarships.index') }}" class="btn btn-secondary btn-lg">← Back to List</a>
-            </div>
-        </div>
+  <div class="bg-white rounded-2xl border-l-4 border-l-blue-600 border shadow-sm p-6">
+    <div class="flex justify-between items-start gap-3">
+      <h1 class="font-black text-[18px] leading-6">{{ $scholarship->title }}</h1>
+      <span class="bg-green-100 text-green-700 text-xs font-black px-3 py-1.5 rounded-full whitespace-nowrap">
+        ₹{{ $scholarship->amount }}
+      </span>
     </div>
+
+    <p class="text-[12px] text-gray-500 mt-3">
+      Department: {{ $scholarship->department?? $scholarship->provider }} | Deadline: {{ $scholarship->deadline?? $scholarship->last_date }}
+    </p>
+
+    <div class="mt-4 text-[13px] leading-6 bg-gray-50 p-4 rounded-xl">
+      {{ $scholarship->description }}
+    </div>
+
+    <div class="mt-4 bg-yellow-50 border border-yellow-200 p-3 rounded-xl text-[11px]">
+      ⚠️ Note: NSP ka direct link `.../NEC_Merit` ab kaam nahi karta (404 aata hai). Official portal pe jaake scheme search karna padta hai.
+    </div>
+
+    <a href="{{ $scholarship->apply_link?? $scholarship->link?? 'https://scholarships.gov.in' }}" target="_blank" class="block text-center mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-black text-sm">
+      Apply on Official NSP Portal →
+    </a>
+
+    <div class="mt-3 flex gap-2">
+      <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!')" class="flex-1 border py-2.5 rounded-full text-xs font-bold">📋 Copy Link</button>
+      <a href="https://wa.me/?text={{ urlencode($scholarship->title.' - ₹'.$scholarship->amount.' - '.url()->current()) }}" target="_blank" class="flex-1 text-center border py-2.5 rounded-full text-xs font-bold bg-green-50">📤 WhatsApp Share</a>
+    </div>
+  </div>
 </div>
 @endsection

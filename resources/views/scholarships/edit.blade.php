@@ -1,61 +1,79 @@
-@extends('layouts.app')
-@section('content')
-<div class="max-w-3xl mx-auto">
-    <div class="bg-white p-8 rounded-xl shadow-lg">
-        <h1 class="text-2xl font-bold mb-6">Edit Scholarship</h1>
+<?php
+namespace App\Http\Controllers;
 
-        <form method="POST" action="{{ route('admin.scholarships.update', $scholarship->id) }}" class="space-y-4">
-            @csrf
-            @method('PUT')
+use Illuminate\Http\Request;
+use App\Models\Scholarship;
 
-            <div>
-                <label class="font-bold text-sm">Title</label>
-                <input type="text" name="title" value="{{ $scholarship->title }}" class="w-full border p-3 rounded-lg" required>
-            </div>
+class ScholarshipController extends Controller
+{
+    public function index(){
+        $scholarships = Scholarship::latest()->get();
+        return view('scholarships.index', compact('scholarships'));
+    }
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="font-bold text-sm">Provider</label>
-                    <input type="text" name="provider" value="{{ $scholarship->provider }}" class="w-full border p-3 rounded-lg" required>
-                </div>
-                <div>
-                    <label class="font-bold text-sm">Category</label>
-                    <select name="category" class="w-full border p-3 rounded-lg" required>
-                        <option value="Post Matric" {{ $scholarship->category=='Post Matric'?'selected':'' }}>Post Matric</option>
-                        <option value="Merit" {{ $scholarship->category=='Merit'?'selected':'' }}>Merit</option>
-                        <option value="Girls" {{ $scholarship->category=='Girls'?'selected':'' }}>Girls</option>
-                        <option value="Central" {{ $scholarship->category=='Central'?'selected':'' }}>Central</option>
-                        <option value="SC/ST" {{ $scholarship->category=='SC/ST'?'selected':'' }}>SC/ST</option>
-                    </select>
-                </div>
-            </div>
+    public function show($id){
+        $scholarship = Scholarship::findOrFail($id);
+        return view('scholarships.show', compact('scholarship'));
+    }
 
-            <div>
-                <label class="font-bold text-sm">Description</label>
-                <textarea name="description" rows="4" class="w-full border p-3 rounded-lg" required>{{ $scholarship->description }}</textarea>
-            </div>
+    // ADMIN
+    public function adminIndex(){
+        $scholarships = Scholarship::latest()->get();
+        return view('scholarships.admin-show', compact('scholarships'));
+    }
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="font-bold text-sm">Amount</label>
-                    <input type="text" name="amount" value="{{ $scholarship->amount }}" class="w-full border p-3 rounded-lg" required>
-                </div>
-                <div>
-                    <label class="font-bold text-sm">Deadline</label>
-                    <input type="date" name="last_date" value="{{ \Carbon\Carbon::parse($scholarship->last_date ?? $scholarship->deadline)->format('Y-m-d') }}" class="w-full border p-3 rounded-lg" required>
-                </div>
-            </div>
+    public function create(){
+        return view('scholarships.create');
+    }
 
-            <div>
-                <label class="font-bold text-sm text-blue-600">Official Apply Link (IMPORTANT)</label>
-                <input type="url" name="apply_link" value="{{ $scholarship->apply_link ?? 'https://scholarships.gov.in' }}" class="w-full border-2 border-blue-200 p-3 rounded-lg" placeholder="https://scholarships.gov.in" required>
-            </div>
+    public function store(Request $request){
+        $request->validate([
+            'title' => 'required',
+            'amount' => 'required',
+            'last_date' => 'required',
+            'apply_link' => 'required|url'
+        ]);
 
-            <div class="flex gap-3 pt-2">
-                <button class="bg-blue-600 text-white px-8 py-2.5 rounded-lg font-bold">Update</button>
-                <a href="{{ route('admin.scholarships.index') }}" class="bg-gray-100 px-8 py-2.5 rounded-lg font-bold">Cancel</a>
-            </div>
-        </form>
-    </div>
-</div>
-@endsection
+        Scholarship::create([
+            'title' => $request->title,
+            'provider' => $request->provider,
+            'department' => $request->provider, // dono me save
+            'category' => $request->category,
+            'amount' => $request->amount, // <-- YEHI SE ALAG-ALAG HOGA
+            'deadline' => $request->last_date, // last_date ko deadline me map
+            'last_date' => $request->last_date,
+            'apply_link' => $request->apply_link,
+            'link' => $request->apply_link,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('admin.scholarships.index')->with('success', 'Scholarship Added with ₹'.$request->amount);
+    }
+
+    public function edit($id){
+        $scholarship = Scholarship::findOrFail($id);
+        return view('scholarships.edit', compact('scholarship'));
+    }
+
+    public function update(Request $request, $id){
+        $s = Scholarship::findOrFail($id);
+        $s->update([
+            'title' => $request->title,
+            'provider' => $request->provider,
+            'department' => $request->provider,
+            'category' => $request->category,
+            'amount' => $request->amount,
+            'deadline' => $request->last_date,
+            'last_date' => $request->last_date,
+            'apply_link' => $request->apply_link,
+            'link' => $request->apply_link,
+            'description' => $request->description,
+        ]);
+        return back()->with('success', 'Updated! Amount is now ₹'.$request->amount);
+    }
+
+    public function destroy($id){
+        Scholarship::findOrFail($id)->delete();
+        return back()->with('success', 'Deleted');
+    }
+}

@@ -13,10 +13,11 @@ class AdmitCardController extends Controller
 
     // Ye public wala hai
     public function publicIndex()
-    {
-        $admitCards = AdmitCard::latest()->get();
-        return view('admit-cards.index', compact('admitCards'));
-    }
+{
+    $admitCards = \App\Models\AdmitCard::latest()->paginate(20);
+    return view('admit-cards.index', compact('admitCards'));
+    // ya agar tera view 'admit-cards.index' hai to wahi likh
+}
 
     public function create(){ 
         return view('admin.admit-cards.create'); 

@@ -1,19 +1,43 @@
-<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script></head>
-<body style="background: linear-gradient(135deg, #fffaf0 0%, #e6f6ff 100%);">
-<div class="max-w-4xl mx-auto px-6 py-8">
-    <h1 class="text-3xl font-bold">Latest <span style="color:orange">Scholarships</span> 2026</h1>
-    <div class="mt-8 space-y-5">
-       @foreach($scholarships as $sch)
-       <div class="bg-white rounded-xl border-l-4 border-blue-400 p-5 shadow-sm hover:shadow-xl transition-all hover:-translate-y-1">
-            <div class="flex gap-2 mb-2">
-                <span class="bg-blue-50 text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full">{{ $sch->provider?? 'Scholarship' }}</span>
-                <span class="bg-red-50 text-red-600 text-[10px] font-bold px-3 py-1 rounded-full">Last: {{ $sch->last_date }}</span>
-            </div>
-            <h3 class="font-bold text-[15px]">{{ $sch->title }}</h3>
-            <p class="text-xs text-gray-500 mt-1">{{ Str::limit($sch->description, 100) }}</p>
-            <div class="mt-3 flex gap-2"><span class="text-xs border px-4 py-1.5 rounded-full">Details</span><a href="{{ $sch->apply_link }}" target="_blank" class="text-xs bg-blue-500 text-white px-5 py-1.5 rounded-full font-bold">Apply Now →</a></div>
-       </div>
-       @endforeach
-    </div>
+@extends('layouts.app')
+@section('content')
+<div class="max-w-3xl mx-auto px-3 py-6">
+<h1 class="font-black text-xl text-center mb-6">🎓 {{ $scholarships->count() }} Scholarships</h1>
+
+@forelse($scholarships as $s)
+<div class="bg-white rounded-2xl border p-4 mb-3 border-l-4 border-l-blue-500 shadow-sm">
+<div class="flex justify-between items-start gap-2">
+  <h3 class="font-bold text-[13px] leading-4">{{ $s->title }}</h3>
+  <span class="bg-green-100 text-green-700 text-[10px] font-black px-2.5 py-1 rounded-full whitespace-nowrap">₹{{ $s->amount }}</span>
 </div>
-</body></html>
+<p class="text-[11px] text-gray-500 mt-1">Dept: {{ $s->department?? $s->provider }} | Deadline: {{ \Carbon\Carbon::parse($s->deadline?? $s->last_date)->format('d-m-Y') }}</p>
+<div class="mt-3 flex gap-2">
+
+{{-- APPLY FIX --}}
+<a href="{{ route('scholarships.show', $s->id) }}" class="text-xs bg-blue-600 text-white px-4 py-1.5 rounded-full font-bold">
+  Apply →
+</a>
+
+{{-- SHARE FIX --}}
+<button onclick="shareNow('{{ addslashes($s->title) }} - ₹{{ addslashes($s->amount) }}', '{{ url('/scholarships/'.$s->id) }}')"
+   class="text-xs border px-3 py-1.5 rounded-full bg-gray-50 font-bold">
+   📤 Share
+</button>
+
+</div>
+</div>
+@empty
+<p class="text-center text-sm">No scholarships yet</p>
+@endforelse
+</div>
+
+<script>
+function shareNow(title, url){
+    let text = title + " - Apply here: " + url;
+    if(navigator.share){
+        navigator.share({title: title, text: text, url: url});
+    } else {
+        window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+    }
+}
+</script>
+@endsection

@@ -23,8 +23,11 @@ class HomeController extends Controller
      */
    public function index()
 {
-   // HomeController ke index() me
-$admitCards = \App\Models\AdmitCard::latest()->take(4)->get();
-return view('home', compact('jobs','scholarships','admitCards'));
+    // HomeController ke index() me
+    $jobs = \App\Models\Job::latest()->take(6)->get();
+    $scholarships = \App\Models\Scholarship::latest()->take(6)->get();
+    $admitCards = \App\Models\AdmitCard::latest()->take(4)->get();
+    
+    return view('home', compact('jobs','scholarships','admitCards'));
 }
 }
