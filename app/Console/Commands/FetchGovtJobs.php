@@ -14,12 +14,12 @@ class FetchGovtJobs extends Command
 
     public function handle()
     {
-        $this->info('Fetching from TPSC...');
-        try {
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0',
-                'Referer' => 'https://tpsc.tripura.gov.in/',
-            ])->withoutVerifying()->timeout(30)->retry(3, 1000)->get('https://tpsc.tripura.gov.in/advertisement');
+        $response = Http::withHeaders([
+    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language' => 'en-US,en;q=0.9',
+    'Referer' => 'https://tpsc.tripura.gov.in/',
+])->withoutVerifying()->timeout(60)->retry(5, 3000)->get('https://tpsc.tripura.gov.in/advertisement');
 
             if(!$response->successful()){
                 $this->error('Failed: '.$response->status());
