@@ -23,10 +23,12 @@ Route::post('/login', [AuthController::class,'login']);
 Route::get('/logout', [AuthController::class,'logout']);
 
 Route::get('/', function () {
+    if (!\Illuminate\Support\Facades\Cache::has('last_job_fetch')) {
+        try { \Illuminate\Support\Facades\Artisan::call('jobs:fetch-latest'); \Illuminate\Support\Facades\Cache::put('last_job_fetch', now(), now()->addHours(6)); } catch (\Exception $e) {}
+    }
     $jobs = \App\Models\Job::latest()->take(6)->get();
     $scholarships = \App\Models\Scholarship::latest()->take(6)->get();
-    $results = collect([]);
-    $admitCards = collect([]);
+    $results = collect([]); $admitCards = collect([]);
     try { $results = \App\Models\ExamResult::latest()->take(3)->get(); } catch (\Throwable $e) {}
     try { $admitCards = \App\Models\AdmitCard::latest()->take(3)->get(); } catch (\Throwable $e) {}
     return view('home', compact('jobs','scholarships','results','admitCards'));
