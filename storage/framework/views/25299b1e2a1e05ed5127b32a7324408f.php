@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Tripura Career</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-orange-100 via-white to-cyan-100 flex items-center justify-center px-4">
+
+<div class="w-full max-w-md">
+
+    
+    <div class="text-center mb-6">
+        <a href="<?php echo e(route('home')); ?>" class="text-3xl font-extrabold">
+            🔥 <span class="text-orange-600">Tripura</span> Career
+        </a>
+        <p class="text-gray-500 mt-2">Login to your account</p>
+    </div>
+
+    
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white p-8">
+
+        <h1 class="text-2xl font-extrabold text-center">Welcome Back 👋</h1>
+        <p class="text-center text-gray-500 text-sm mt-2">Login to continue</p>
+
+        <?php if($errors->any()): ?>
+            <div class="mt-5 bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-sm">
+                <ul class="list-disc ml-5">
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li><?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        
+        <form action="<?php echo e(route('login.submit')); ?>" method="POST" class="mt-6 space-y-5">
+            <?php echo csrf_field(); ?>
+
+            
+            <div>
+                <label class="block font-semibold text-sm mb-2">Email Address</label>
+                <input type="email" name="email" value="<?php echo e(old('email')); ?>" placeholder="Enter your email" required autofocus
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-400">
+            </div>
+
+            
+            <div>
+                <label class="block font-semibold text-sm mb-2">Password</label>
+                <div class="relative">
+                    <input id="password" type="password" name="password" placeholder="Enter your password" required
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 pr-12 outline-none focus:ring-2 focus:ring-orange-400">
+                    
+                    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black">
+                        
+                        <svg id="eyeClose" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                        </svg>
+                        
+                        <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            
+            <div class="flex items-center gap-2">
+                <input type="checkbox" name="remember" value="1" class="w-4 h-4">
+                <label class="text-sm text-gray-600">Remember me</label>
+            </div>
+
+            
+            <button type="submit" class="w-full bg-black text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition">
+                🔐 Login
+            </button>
+        </form>
+
+        
+        <div class="text-center mt-6 text-sm text-gray-600">
+            Don't have an account?
+            <a href="<?php echo e(route('register')); ?>" class="font-bold text-orange-600 hover:underline">Create Account</a>
+        </div>
+    </div>
+
+    
+    <div class="text-center mt-5">
+        <a href="<?php echo e(route('home')); ?>" class="text-sm text-gray-500 hover:text-orange-600">← Back to Home</a>
+    </div>
+</div>
+
+<script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const eyeOpen = document.getElementById('eyeOpen');
+    const eyeClose = document.getElementById('eyeClose');
+
+    togglePassword.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        eyeOpen.classList.toggle('hidden');
+        eyeClose.classList.toggle('hidden');
+    });
+</script>
+
+</body>
+</html><?php /**PATH C:\xampp\htdocs\tripura-career\resources\views/auth/login.blade.php ENDPATH**/ ?>
