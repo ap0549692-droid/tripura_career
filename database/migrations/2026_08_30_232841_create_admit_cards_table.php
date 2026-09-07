@@ -8,21 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('admit_cards')) {
+            return;
+        }
+
         Schema::create('admit_cards', function (Blueprint $table) {
-
             $table->id();
-
             $table->string('title');
-
             $table->text('link')->nullable();
-
             $table->text('description')->nullable();
-
             $table->timestamps();
-
         });
     }
-
 
     public function down(): void
     {
