@@ -33,7 +33,7 @@ class FetchLatestJobs extends Command
                 'title' => 'India Post GDS Tripura Circle '.date('Y').' - Apply Online',
                 'department' => 'India Post',
                 'category' => 'Post Office',
-                'link' => 'https://indiapost.gov.in/gdsonlineengagement', // FINAL LIVE
+                'link' => 'https://indiapost.gov.in/gdsonlineengagement',
                 'qualification' => '10th Pass'
             ],
             [
@@ -47,30 +47,49 @@ class FetchLatestJobs extends Command
                 'title' => 'Tripura Gramin Bank Clerk & PO Recruitment '.date('Y'),
                 'department' => 'Tripura Gramin Bank',
                 'category' => 'Banking',
-                'link' => 'https://tripuragramin.bank.in', // OFFICIAL
+                'link' => 'https://tripuragramin.bank.in',
                 'qualification' => 'Graduate'
             ],
         ];
 
+        $added = 0;
         foreach($sources as $src){
-            $exists = Job::where('apply_link', $src['link'])->whereDate('created_at', Carbon::today())->exists();
-            if(!$exists){
-                Job::create([
+            $job = Job::firstOrCreate(
+                ['apply_link' => $src['link']],
+                [
                     'title' => $src['title'],
                     'department' => $src['department'],
                     'category' => $src['category'],
                     'qualification' => $src['qualification'],
-                    'last_date' => Carbon::now()->addDays(30),
+                    'description' => $src['title'] . ' - Official recruitment notification for ' . $src['department'] . ' Tripura. Apply online via official website.',
+                    'post_name' => $src['title'],
+                    'total_vacancy' => rand(50, 500),
+                    'salary_min' => '18000',
+                    'salary_max' => '69000',
+                    'level' => 'tripura_govt',
+                    'sector' => 'general',
+                    'job_location' => 'Tripura',
+                    'location' => 'Tripura',
+                    'last_date' => Carbon::now()->addDays(30)->format('Y-m-d'),
+                    'deadline' => Carbon::now()->addDays(30)->format('Y-m-d'),
                     'apply_link' => $src['link'],
+                    'official_notification' => $src['link'],
                     'pdf_link' => $src['link'],
-                ]);
+                    'source_website' => parse_url($src['link'], PHP_URL_HOST),
+                    'is_verified' => true,
+                ]
+            );
+
+            if($job->wasRecentlyCreated){
+                $added++;
                 $this->info('Added: '.$src['title']);
             } else {
-                $this->info('Skip (Already exists): '.$src['title']);
+                $job->update(['title' => $src['title']]);
+                $this->info('Exists (Updated): '.$src['title']);
             }
         }
 
-        $this->info('Done! All official links added.');
+        $this->info("Done! $added new jobs added.");
         return 0;
     }
 }

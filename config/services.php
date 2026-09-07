@@ -25,4 +25,12 @@ return [
         ],
     ],
 
+        'facebook' => [
+        'page_id' => env('FB_PAGE_ID'),
+        'page_token' => env('FB_PAGE_TOKEN'),
+        'app_id' => env('FB_APP_ID'),
+        'app_secret' => env('FB_APP_SECRET'),
+    ],
+
+
 ];

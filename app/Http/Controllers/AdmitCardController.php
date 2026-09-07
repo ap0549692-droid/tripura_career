@@ -1,51 +1,133 @@
 <?php
+
 namespace App\Http\Controllers;
-use App\Models\AdmitCard;
+
 use Illuminate\Http\Request;
+use App\Models\AdmitCard;
 
 class AdmitCardController extends Controller
 {
-    // Ye admin wala hai
-    public function adminIndex(){
+    /*
+    |--------------------------------------------------------------------------
+    | PUBLIC
+    |--------------------------------------------------------------------------
+    */
+
+    // All Admit Cards
+    public function index()
+    {
         $admitCards = AdmitCard::latest()->get();
+
+        return view('admit-cards.index', compact('admitCards'));
+    }
+
+
+    // Single Admit Card
+    public function show($id)
+    {
+        $admitCard = AdmitCard::findOrFail($id);
+
+        return view('admit-cards.show', compact('admitCard'));
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN
+    |--------------------------------------------------------------------------
+    */
+
+    // Admin Admit Card List
+    public function adminIndex()
+    {
+        $admitCards = AdmitCard::latest()->paginate(20);
+
         return view('admin.admit-cards.index', compact('admitCards'));
     }
 
-    // Ye public wala hai
-    public function publicIndex()
-{
-    $admitCards = \App\Models\AdmitCard::latest()->paginate(20);
-    return view('admit-cards.index', compact('admitCards'));
-    // ya agar tera view 'admit-cards.index' hai to wahi likh
-}
 
-    public function create(){ 
-        return view('admin.admit-cards.create'); 
+    // Create Page
+    public function create()
+    {
+        return view('admin.admit-cards.create');
     }
 
-    public function store(Request $request){
+
+    // Save Admit Card
+    public function store(Request $request)
+    {
         $request->validate([
-            'title' => 'required',
-            'department' => 'required',
-            'exam_date' => 'required',
-            'admit_link' => 'required|url'
+            'title' => 'required|string|max:255',
+            'link' => 'required|url',
+            'description' => 'nullable|string',
         ]);
-        AdmitCard::create($request->all());
-        return redirect()->route('admin.admit-cards.index')->with('success','Admit Card Added!');
+
+        AdmitCard::create([
+            'title' => $request->title,
+            'link' => $request->link,
+            'description' => $request->description,
+        ]);
+
+        return redirect()
+            ->route('admin.admit-cards.index')
+            ->with('success', 'Admit Card added successfully!');
     }
 
-    public function edit($id){
-        $card = AdmitCard::findOrFail($id);
-        return view('admin.admit-cards.edit', compact('card'));
+
+    // Edit Page
+    public function edit($id)
+    {
+        $admitCard = AdmitCard::findOrFail($id);
+
+        return view('admin.admit-cards.edit', compact('admitCard'));
     }
 
-    public function update(Request $request, $id){
-        AdmitCard::findOrFail($id)->update($request->all());
-        return redirect()->route('admin.admit-cards.index')->with('success','Updated!');
+
+    // Update
+    public function update(Request $request, $id)
+    {
+        $admitCard = AdmitCard::findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'link' => 'required|url',
+            'description' => 'nullable|string',
+        ]);
+
+        $admitCard->update([
+            'title' => $request->title,
+            'link' => $request->link,
+            'description' => $request->description,
+        ]);
+
+        return redirect()
+            ->route('admin.admit-cards.index')
+            ->with('success', 'Admit Card updated successfully!');
     }
 
-    public function destroy($id){
-        AdmitCard::findOrFail($id)->delete();
-        return back()->with('success','Deleted!');
+
+    // Delete
+    public function destroy($id)
+    {
+        $admitCard = AdmitCard::findOrFail($id);
+
+        $admitCard->delete();
+
+        return back()->with(
+            'success',
+            'Admit Card deleted successfully!'
+        );
+    }
+
+
+    // Bulk Delete
+    public function bulkDelete()
+    {
+        AdmitCard::query()->delete();
+
+        return back()->with(
+            'success',
+            'All Admit Cards deleted successfully!'
+        );
     }
 }

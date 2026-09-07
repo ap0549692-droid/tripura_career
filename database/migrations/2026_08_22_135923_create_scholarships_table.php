@@ -9,12 +9,14 @@ return new class extends Migration {
     $table->id();
     $table->string('title');
     $table->string('provider')->nullable();
-    $table->text('description')->nullable();
-    $table->string('amount')->nullable();
+    $table->string('department')->nullable();
     $table->string('category')->nullable();
-    $table->string('eligibility')->nullable();
-    $table->date('deadline')->nullable();
+    $table->string('amount')->nullable();
     $table->date('last_date')->nullable();
+    $table->date('deadline')->nullable();
+    $table->string('apply_link')->nullable();
+    $table->string('link')->nullable();
+    $table->text('description')->nullable();
     $table->timestamps();
 });
     }

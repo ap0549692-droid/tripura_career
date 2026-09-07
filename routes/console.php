@@ -9,51 +9,26 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// ===== AUTO UPDATE JOBS - Har 6 Ghante Me =====
-Schedule::call(function () {
-    try {
-        $controller = new \App\Http\Controllers\AdminController();
-        $request = new \Illuminate\Http\Request();
-        app()->call([$controller, 'fetchJobs'], ['request' => $request]);
-        Log::info('Auto Jobs Fetch Success - ' . now());
-    } catch (\Exception $e) {
-        Log::error('Auto Jobs Fetch Failed: ' . $e->getMessage());
-    }
-})->everySixHours()->timezone('Asia/Kolkata');
+// 1. AUTO JOBS - Har 6 ghante me
+Schedule::command('jobs:fetch-all')
+    ->everySixHours()
+    ->timezone('Asia/Kolkata')
+    ->withoutOverlapping()
+    ->onSuccess(function () {
+        Log::info('✅ Jobs Auto Success - '.now());
+    })
+    ->onFailure(function () {
+        Log::error('❌ Jobs Auto Failed - '.now());
+    });
 
-// ===== AUTO UPDATE SCHOLARSHIPS - Har 6 Ghante Me =====
-Schedule::call(function () {
-    try {
-        $controller = new \App\Http\Controllers\AdminController();
-        $request = new \Illuminate\Http\Request();
-        app()->call([$controller, 'fetchScholarships'], ['request' => $request]);
-        Log::info('Auto Scholarships Fetch Success - ' . now());
-    } catch (\Exception $e) {
-        Log::error('Auto Scholarships Fetch Failed: ' . $e->getMessage());
-    }
-})->everySixHours()->timezone('Asia/Kolkata');
-
-// ===== AUTO-LINK ADMIT CARDS - Har 6 Ghante Me =====
-Schedule::call(function () {
-    try {
-        $controller = new \App\Http\Controllers\AdminController();
-        app()->call([$controller, 'fetchAdmitCardsAuto']);
-        Log::info('Auto Admit Link Success - ' . now());
-    } catch (\Exception $e) {
-        Log::error('Auto Admit Link Failed: ' . $e->getMessage());
-    }
-})->everySixHours()->timezone('Asia/Kolkata');
-
-// ===== AUTO-LINK RESULTS - Har 6 Ghante Me =====
-Schedule::call(function () {
-    try {
-        $controller = new \App\Http\Controllers\AdminController();
-        app()->call([$controller, 'fetchResultsAuto']);
-        Log::info('Auto Result Link Success - ' . now());
-    } catch (\Exception $e) {
-        Log::error('Auto Result Link Failed: ' . $e->getMessage());
-    }
-})->everySixHours()->timezone('Asia/Kolkata');
-
-// ===== NEW AUTO FETCH - DIRECT OFFICIAL WEBSITE LINK =====
-Schedule::command('jobs:fetch-latest')->everySixHours()->timezone('Asia/Kolkata');
+// 2. AUTO SCHOLARSHIP - Har 6 ghante me
+Schedule::command('scholarships:fetch')
+    ->everySixHours()
+    ->timezone('Asia/Kolkata')
+    ->withoutOverlapping()
+    ->onSuccess(function () {
+        Log::info('✅ Scholarship Auto Success - '.now());
+    })
+    ->onFailure(function () {
+        Log::error('❌ Scholarship Auto Failed - '.now());
+    });

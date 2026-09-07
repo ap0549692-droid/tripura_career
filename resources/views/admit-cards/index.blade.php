@@ -1,24 +1,92 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-3xl mx-auto px-3 py-6">
-<h1 class="text-center font-black text-xl mb-6">🎫 {{ $admitCards instanceof \Illuminate\Pagination\LengthAwarePaginator ? $admitCards->total() : $admitCards->count() }} Latest Admit Cards</h1>
 
-@forelse($admitCards as $card)
-<div class="bg-white rounded-2xl border shadow-sm p-4 mb-4 border-l-4 border-l-green-500 hover:shadow-md transition">
-  <div class="flex justify-between items-center">
-    <span class="text-[10px] font-black bg-green-100 text-green-700 px-2.5 py-1 rounded-full">ADMIT CARD</span>
-    <span class="text-[11px] font-bold bg-gray-900 text-white px-2.5 py-1 rounded-full">Exam: {{ $card->exam_date?? 'Soon' }}</span>
-  </div>
-  <h2 class="font-bold text-[14px] mt-3 leading-tight">{{ $card->title }}</h2>
-  <div class="mt-3">
-    <a href="{{ $card->download_link }}" target="_blank" class="text-xs font-bold bg-green-600 text-white px-5 py-2 rounded-full">Download Admit Card →</a>
-  </div>
-</div>
-@empty
-<div class="text-center p-10 bg-white rounded-2xl">No Admit Cards Found - Will be updated soon</div>
-@endforelse
+<div class="max-w-6xl mx-auto px-4 py-8">
 
-<div class="mt-6">{{ $admitCards->links() }}</div>
+    {{-- Page Header --}}
+    <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-black text-gray-900">
+            📄 Admit Cards
+        </h1>
+
+        <p class="text-gray-500 mt-2">
+            Latest Government Exam Admit Cards
+        </p>
+    </div>
+
+
+    {{-- Success Message --}}
+    @if(session('success'))
+        <div class="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-xl mb-6">
+            ✅ {{ session('success') }}
+        </div>
+    @endif
+
+
+    {{-- Admit Cards --}}
+    @forelse($admitCards as $admitCard)
+
+        <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 mb-4
+                    hover:shadow-xl transition">
+
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">
+                        {{ $admitCard->title }}
+                    </h2>
+
+                    @if(!empty($admitCard->description))
+                        <p class="text-gray-500 text-sm mt-2">
+                            {{ $admitCard->description }}
+                        </p>
+                    @endif
+                </div>
+
+
+                <div class="flex gap-2">
+
+                    <a href="{{ route('admitCards.show', $admitCard->id) }}"
+                       class="bg-gray-800 hover:bg-black text-white px-4 py-2 rounded-lg font-bold">
+                        View
+                    </a>
+
+                    @if($admitCard->link)
+                        <a href="{{ $admitCard->link }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold">
+                            Download
+                        </a>
+                    @endif
+
+                </div>
+
+            </div>
+
+        </div>
+
+    @empty
+
+        <div class="bg-white rounded-2xl shadow p-10 text-center">
+
+            <div class="text-5xl mb-4">
+                📄
+            </div>
+
+            <h2 class="text-xl font-bold text-gray-800">
+                No Admit Cards Available
+            </h2>
+
+            <p class="text-gray-500 mt-2">
+                Abhi koi admit card available nahi hai.
+            </p>
+
+        </div>
+
+    @endforelse
+
 </div>
+
 @endsection

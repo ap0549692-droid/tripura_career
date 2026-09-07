@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title','Tripura Jobs & Scholarships 2026 - Govt Jobs, Scholarships, PRTC Jobs, 10th 12th Pass')</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title><?php echo $__env->yieldContent('title','Tripura Jobs & Scholarships 2026 - Govt Jobs, Scholarships, PRTC Jobs, 10th 12th Pass'); ?></title>
     <meta name="description" content="Latest Tripura Govt Jobs 2026 - TPSC, JRBT, Tripura Police, 10th 12th Pass jobs. No fake. PRTC verified. AI help available.">
-    <link rel="canonical" href="{{ url()->current() }}" />
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="canonical" href="<?php echo e(url()->current()); ?>" />
+    <link rel="icon" type="image/x-icon" href="<?php echo e(asset('favicon.ico')); ?>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -20,7 +20,7 @@
     </style>
 </head>
 <body class="main-bg">
-@php use Illuminate\Support\Facades\Auth; @endphp
+<?php use Illuminate\Support\Facades\Auth; ?>
 
 <nav class="nav-glass shadow-sm p-4 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
@@ -32,20 +32,20 @@
             <li><a href="/admit-cards" class="hover:text-orange-500 hidden md:block">Admit Cards</a></li>
             <li><a href="/check-eligibility" class="text-sm font-semibold hover:text-orange-500">PRTC Check</a></li>
             <li><a href="/tools/age-calculator" class="text-sm font-semibold hover:text-orange-500">Age Calculator</a></li>
-            @if(Auth::check())
-                <li class="hidden md:block text-gray-700">Hi, {{ Auth::user()->name }}</li>
+            <?php if(Auth::check()): ?>
+                <li class="hidden md:block text-gray-700">Hi, <?php echo e(Auth::user()->name); ?></li>
                 <li><a href="/dashboard" class="bg-black text-white px-5 py-2.5 rounded-full"><i class="fa-solid fa-gauge-high mr-1"></i> Dashboard</a></li>
                 <li><a href="/logout" class="bg-red-500 text-white px-4 py-2 rounded-full">Logout</a></li>
-            @else
+            <?php else: ?>
                 <li><a href="/login" class="px-3">Login</a></li>
                 <li><a href="/register" class="bg-black text-white px-5 py-2.5 rounded-full">Register</a></li>
-            @endif
+            <?php endif; ?>
         </ul>
     </div>
 </nav>
 
 <div class="max-w-7xl mx-auto mt-8 px-4 pb-10 min-h-[70vh]">
-    @yield('content')
+    <?php echo $__env->yieldContent('content'); ?>
 </div>
 
 <footer class="mt-20 border-t glass-card">
@@ -139,4 +139,4 @@ document.getElementById('aiInput').addEventListener('keypress', e=>{ if(e.key===
 </script>
 
 </body>
-</html>
+</html><?php /**PATH C:\xampp\htdocs\tripura-career\resources\views/layouts/app.blade.php ENDPATH**/ ?>

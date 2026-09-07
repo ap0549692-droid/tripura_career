@@ -2,32 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Job;
+use App\Models\AdmitCard;
+use App\Models\Scholarship;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function index()
     {
-        $this->middleware('auth');
-    }
+        // Jobs
+        $jobs = Job::latest()->get();
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-   public function index()
-{
-    // HomeController ke index() me
-    $jobs = \App\Models\Job::latest()->take(6)->get();
-    $scholarships = \App\Models\Scholarship::latest()->take(6)->get();
-    $admitCards = \App\Models\AdmitCard::latest()->take(4)->get();
-    
-    return view('home', compact('jobs','scholarships','admitCards'));
-}
+        // Admit Cards
+        $admitCards = AdmitCard::latest()->get();
+
+        // Scholarships
+        $scholarships = Scholarship::latest()->get();
+
+        return view('home', compact(
+            'jobs',
+            'admitCards',
+            'scholarships'
+        ));
+    }
 }
