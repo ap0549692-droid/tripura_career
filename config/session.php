@@ -6,8 +6,7 @@ return [
 
     
 
-    'driver' => 'array',
-
+'driver' => env('SESSION_DRIVER', 'array'),
    
 
     'lifetime' => (int) env('SESSION_LIFETIME', 120),
