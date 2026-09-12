@@ -9,8 +9,5 @@
       "src": "/(.*)",
       "dest": "/api/index.php"
     }
-  ],
-  "buildCommand": "",
-  "outputDirectory": "public",
-  "framework": null
+  ]
 }
