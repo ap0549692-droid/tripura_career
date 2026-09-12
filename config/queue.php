@@ -4,8 +4,7 @@ return [
 
    
 
-    'default' => 'sync',
-
+'default' => env('QUEUE_CONNECTION', 'sync'),
    
     'connections' => [
 
